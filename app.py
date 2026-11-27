@@ -26,17 +26,28 @@ st.write("Ask questions from your PDFs or use General AI.")
 
 # -------------------- API SETUP --------------------
 
+
+# -------------------- API SETUP --------------------
+
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 
+# If local .env key is unavailable, read Streamlit Cloud Secrets
 if not api_key:
-    st.error("GEMINI_API_KEY not found. Please check your .env file.")
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        api_key = None
+
+if not api_key:
+    st.error("GEMINI_API_KEY not found. Please configure it in .env or Streamlit Secrets.")
     st.stop()
 
 client = genai.Client(api_key=api_key)
 
 MODEL_NAME = "gemini-3.5-flash-lite"
+
 
 
 # -------------------- SESSION STATE --------------------
